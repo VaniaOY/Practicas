@@ -9,15 +9,20 @@ package edu.ipn.cecyt9.calculadora;
  * - Restar 
  * - Multiplicar 
  * - Dividir
+ * - Exponencial 
+ * - Raiz cuadrada 
+ * - Factorial 
+ * - Binario
+ * - Seno
  * 
- *@author:  emmanuel 
- * @version:  1.0 
- * @date: 06-09-2015 
+ *@author:  emmanuel ft. Vania
+ * @version:  2.0 
+ * @date: 11-02-17 
  */
 public class CalculadoraMain {
  public static void main(String[] args) {
 		Calculadora calculadora = new Calculadora();
 		calculadora.setVisible(true);
-                //holasdsjfhds
+                //Hola :D
 	}   
 }
