@@ -9,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
-import javax.swing.JButton;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -33,7 +32,7 @@ public class Calculadora extends JFrame {
 	private static final long serialVersionUID = 1583724102189855698L;
 
 	/** numero tecleado */
-	JTextField pantalla;
+	JTextField pantalla,pantalla2;
 
 	/** guarda el resultado de la operacion anterior o el número tecleado */
 	double resultado;
@@ -53,8 +52,8 @@ public class Calculadora extends JFrame {
 	 */
 	public Calculadora() {
 		super();
-		setSize(250, 300);
-		setTitle("Calculadora Simple");
+		setSize(450, 300);
+		setTitle("Calculadora No Tan Simple");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setResizable(false);
 
@@ -63,16 +62,24 @@ public class Calculadora extends JFrame {
 		panel.setLayout(new BorderLayout());
 
 		pantalla = new JTextField("0", 20);
-		pantalla.setBorder(new EmptyBorder(4, 4, 4, 4));
+		pantalla.setBorder(new EmptyBorder(24, 24, 4, 20));
 		pantalla.setFont(new Font("Arial", Font.BOLD, 25));
 		pantalla.setHorizontalAlignment(JTextField.RIGHT);
 		pantalla.setEditable(false);
 		pantalla.setBackground(Color.WHITE);
 		panel.add("North", pantalla);
+                
+                pantalla2 = new JTextField("0", 10);
+		pantalla2.setBorder(new EmptyBorder(2, 2, 2, 20));
+		pantalla2.setFont(new Font("Arial", Font.BOLD, 15));
+		pantalla2.setHorizontalAlignment(JTextField.RIGHT);
+		pantalla2.setEditable(false);
+		pantalla2.setBackground(Color.WHITE);
+		panel.add("South", pantalla2);
 
 		panelNumeros = new JPanel();
 		panelNumeros.setLayout(new GridLayout(4, 3));
-		panelNumeros.setBorder(new EmptyBorder(4, 4, 4, 4));
+		panelNumeros.setBorder(new EmptyBorder(4, 4, 4, 10));
 
 		for (int n = 9; n >= 0; n--) {
 			nuevoBotonNumerico("" + n);
@@ -84,14 +91,19 @@ public class Calculadora extends JFrame {
 
 		panelOperaciones = new JPanel();
 		panelOperaciones.setLayout(new GridLayout(6, 1));
-		panelOperaciones.setBorder(new EmptyBorder(4, 4, 4, 4));
+		panelOperaciones.setBorder(new EmptyBorder(4, 4, 4, 40));
 
-		nuevoBotonOperacion("+");
-		nuevoBotonOperacion("-");
-		nuevoBotonOperacion("*");
-		nuevoBotonOperacion("/");
-		nuevoBotonOperacion("=");
 		nuevoBotonOperacion("CE");
+		nuevoBotonOperacion("+");
+                nuevoBotonOperacion("^");
+		nuevoBotonOperacion("-");
+		nuevoBotonOperacion("!");
+		nuevoBotonOperacion("*");
+		nuevoBotonOperacion("√");
+		nuevoBotonOperacion("/");
+		nuevoBotonOperacion("bin");
+		nuevoBotonOperacion("sen");
+		nuevoBotonOperacion("=");
 
 		panel.add("East", panelOperaciones);
 
@@ -105,9 +117,9 @@ public class Calculadora extends JFrame {
 	 * @param digito
 	 *            boton a crear
 	 */
-	private void nuevoBotonNumerico(String digito) {
+        	private void nuevoBotonNumerico(String digito) {
 		JButton btn = new JButton();
-		btn.setText(digito);
+		btn.setText(digito);        
 		btn.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -147,14 +159,17 @@ public class Calculadora extends JFrame {
 	 * @param digito
 	 *            tecla pulsada
 	 */
+        boolean puntos = false;
 	private void numeroPulsado(String digito) {
-		if (pantalla.getText().equals("0") || nuevaOperacion) {
+            	if (pantalla.getText().equals("0") || nuevaOperacion) {
 			pantalla.setText(digito);
+			pantalla2.setText(pantalla2.getText()+digito);
 		} else {
 			pantalla.setText(pantalla.getText() + digito);
+			pantalla2.setText(pantalla2.getText() + digito);
 		}
 		nuevaOperacion = false;
-	}
+        }
 
 	/**
 	 * Gestiona el gestiona las pulsaciones de teclas de operación
@@ -167,13 +182,16 @@ public class Calculadora extends JFrame {
 		} else if (tecla.equals("CE")) {
 			resultado = 0;
 			pantalla.setText("");
+			pantalla2.setText("");
 			nuevaOperacion = true;
 		} else {
 			operacion = tecla;
 			if ((resultado > 0) && !nuevaOperacion) {
 				calcularResultado();
 			} else {
-				resultado = new Double(pantalla.getText());
+                            resultado = new Double(pantalla.getText());
+                                pantalla2.setText(pantalla.getText()+ tecla);
+                                
 			}
 		}
 
@@ -192,9 +210,24 @@ public class Calculadora extends JFrame {
 			resultado /= new Double(pantalla.getText());
 		} else if (operacion.equals("*")) {
 			resultado *= new Double(pantalla.getText());
+		} else if (operacion.equals("^")) {
+			resultado = Math.pow(resultado, new Double(pantalla.getText()));
+		} else if (operacion.equals("!")) {
+                        for (double i = (resultado-1); i >0; i--) {
+                            resultado *= i;
+                        }
+		} else if (operacion.equals("√")) {
+			resultado = Math.sqrt(resultado);
+		}else if (operacion.equals("bin")) {
+			int res = (int) resultado;
+                        resultado = Integer.valueOf(Integer.toBinaryString(res)); 
+		} else if (operacion.equals("sen")) {
+                        resultado = Math.sin(Math.toRadians(resultado)); 
 		}
 
 		pantalla.setText("" + resultado);
+		pantalla2.setText(pantalla2.getText()+"=" + resultado);
 		operacion = "";
 	}
+	
 }
